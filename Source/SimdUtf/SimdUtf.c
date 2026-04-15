@@ -4,7 +4,7 @@
 #include "SimdUtf.h"
 #include <assert.h>
 
-#include "../RegistryInternal.h"
+#include "../Endian.h"
 
 static inline uint32_t conditional_select_u32(uint32_t condition, uint32_t if_true, uint32_t if_false) {
     assert(condition <= 1);

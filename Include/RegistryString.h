@@ -32,6 +32,8 @@ typedef struct {
 	uint16_t BufferName[(Length)];                            \
 	registry_string16 StringName = {0, (Length), BufferName}; \
 
+// wcslen() but UTF-16
+size_t Registry_CountString16(uint16_t* sInput);
 
 // Assumes output length >= input length
 // Return number of errors

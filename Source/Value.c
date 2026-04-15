@@ -144,7 +144,7 @@ registry_status Registry_CreateAndOpenValue(
 	}
 
 	// Update Key
-	pKeyNode->MaxValueNameLen = max(pKeyNode->MaxValueNameLen, NameUnicode.Length);
+	pKeyNode->MaxValueNameLen = REGISTRY_MAX(pKeyNode->MaxValueNameLen, NameUnicode.Length);
 	KeQuerySystemTime(&pKeyNode->LastWriteTime);
 
 	*phValue = (h_value){pHive, pKeyValue, CellIndex};
@@ -271,7 +271,7 @@ registry_status Registry_QueryValueName(
 
 	USHORT NameLength = RealNameSize / sizeof(uint16_t);
 	*pRealNameLength = NameLength;
-	NameLength = (USHORT)min((size_t)NameLength, pResult->AllocatedLength);
+	NameLength = (USHORT)((size_t)NameLength, pResult->AllocatedLength);
 	pResult->Length = NameLength;
 	USHORT NameSize = NameLength * sizeof(uint16_t);
 
@@ -400,7 +400,7 @@ registry_status Registry_SetValueName(
 
 	// It's non-compressed size here
 	// https://github.com/reactos/reactos/blob/4671b481a38f906a8ffc822b9492f2c942ad1b3e/ntoskrnl/config/cmapi.c#L854
-	pKeyNode->MaxValueNameLen = max(pKeyNode->MaxValueNameLen, NameUnicode.Length);
+	pKeyNode->MaxValueNameLen = REGISTRY_MAX(pKeyNode->MaxValueNameLen, NameUnicode.Length);
 	KeQuerySystemTime(&pKeyNode->LastWriteTime);
 
 	// Now, do the copy

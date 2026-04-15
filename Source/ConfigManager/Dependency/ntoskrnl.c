@@ -1,12 +1,16 @@
 
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include <intrin.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <time.h>
 #include <typedefs.h>
-#include <wchar.h>
+
+static SIZE_T my_wcslen(const WCHAR* s) {
+	size_t i;
+	for (i = 0; s[i] != 0; ++i);
+	return i;
+}
 
 #define UNICODE_NULL ((WCHAR)0)
 #define CONST const
@@ -180,6 +184,34 @@ USHORT NlsUnicodeUpcaseTable[] = {
     0x0481,
 };
 
+#if _MSC_VER
+#define ext_forceinline __forceinline
+#elif __GNUC__
+#define ext_forceinline __attribute__((always_inline))
+#else
+#define ext_forceinline inline
+#endif
+
+#if _MSC_VER
+#define ext_noreturn __declspec(noreturn)
+#elif __GNUC__
+#define ext_noreturn __attribute__((noreturn))
+#else
+#define ext_noreturn
+#endif
+
+#if _MSC_VER
+static ext_noreturn ext_forceinline void ext_unreachable() { __assume(0); }
+#elif __GNUC__
+static ext_noreturn ext_forceinline inline void ext_unreachable() { __builtin_unreachable(); }
+#else
+static ext_noreturn ext_forceinline inline void ext_unreachable() {}
+#endif
+
+#define only_reachable(X) {if (!(X)) ext_unreachable();}
+
+#define ext_min_macro(X, Y) (((X) < (Y)) ? (X) : (Y))
+
 // https://github.com/reactos/reactos/blob/4cba65d760a730ea4b77ab6fee857e563c0984d8/sdk/lib/rtl/unicode.c#L83
 
 VOID
@@ -193,8 +225,8 @@ RtlInitUnicodeString(
 
     if (SourceString)
     {
-        Size = wcslen(SourceString) * sizeof(WCHAR);
-        __analysis_assume(Size <= MaxSize);
+        Size = my_wcslen(SourceString) * sizeof(WCHAR);
+        only_reachable(Size <= MaxSize);
 
         if (Size > MaxSize)
             Size = MaxSize;
@@ -248,7 +280,7 @@ RtlCompareUnicodeString(
     LONG ret = 0;
     LPCWSTR p1, p2;
 
-    len = min(s1->Length, s2->Length) / sizeof(WCHAR);
+    len = ext_min_macro(s1->Length, s2->Length) / sizeof(WCHAR);
     p1 = s1->Buffer;
     p2 = s2->Buffer;
 
@@ -408,6 +440,8 @@ RtlClearBits(
 
 #if _MSC_VER
 
+#include <intrin.h>
+
 #pragma intrinsic(_BitScanForward)
 
 static inline uint8_t bsf_u32(uint32_t X) {
@@ -439,7 +473,7 @@ static inline uint8_t bsf_u32(uint32_t X) {
 
 #endif
 
-static inline unsigned char BitScanForward(unsigned long* pResult, unsigned long X) {
+static inline UCHAR BitScanForward(ULONG* pResult, ULONG X) {
     *pResult = bsf_u32(X);
     return (X == 0);
 }
@@ -449,9 +483,9 @@ static inline unsigned char BitScanForward(unsigned long* pResult, unsigned long
 static __inline
 BITMAP_INDEX
 RtlpGetLengthOfRunClear(
-    _In_ PRTL_BITMAP BitMapHeader,
-    _In_ BITMAP_INDEX StartingIndex,
-    _In_ BITMAP_INDEX MaxLength)
+    IN PRTL_BITMAP BitMapHeader,
+    IN BITMAP_INDEX StartingIndex,
+    IN BITMAP_INDEX MaxLength)
 {
     BITMAP_INDEX Value, BitPos, Length;
     PBITMAP_BUFFER Buffer, MaxBuffer;
@@ -466,7 +500,7 @@ RtlpGetLengthOfRunClear(
     BitPos = StartingIndex & (_BITCOUNT - 1);
 
     /* Calculate the maximum length */
-    MaxLength = min(MaxLength, BitMapHeader->SizeOfBitMap - StartingIndex);
+    MaxLength = ext_min_macro(MaxLength, BitMapHeader->SizeOfBitMap - StartingIndex);
     MaxBuffer = Buffer + (BitPos + MaxLength + _BITCOUNT - 1) / _BITCOUNT;
 
     /* Clear the bits that don't belong to this run */
@@ -505,9 +539,9 @@ RtlpGetLengthOfRunClear(
 static __inline
 BITMAP_INDEX
 RtlpGetLengthOfRunSet(
-    _In_ PRTL_BITMAP BitMapHeader,
-    _In_ BITMAP_INDEX StartingIndex,
-    _In_ BITMAP_INDEX MaxLength)
+    IN PRTL_BITMAP BitMapHeader,
+    IN BITMAP_INDEX StartingIndex,
+    IN BITMAP_INDEX MaxLength)
 {
     BITMAP_INDEX InvValue, BitPos, Length;
     PBITMAP_BUFFER Buffer, MaxBuffer;
@@ -522,7 +556,7 @@ RtlpGetLengthOfRunSet(
     BitPos = StartingIndex & (_BITCOUNT - 1);
 
     /* Calculate the maximum length */
-    MaxLength = min(MaxLength, BitMapHeader->SizeOfBitMap - StartingIndex);
+    MaxLength = ext_min_macro(MaxLength, BitMapHeader->SizeOfBitMap - StartingIndex);
     MaxBuffer = Buffer + (BitPos + MaxLength + _BITCOUNT - 1) / _BITCOUNT;
 
     /* Get the inversed value, clear bits that don't belong to the run */
@@ -616,7 +650,7 @@ retry:
     if (HintIndex)
     {
         /* Retry at the start */
-        Margin = min(HintIndex + NumberToFind, BitMapHeader->SizeOfBitMap);
+        Margin = ext_min_macro(HintIndex + NumberToFind, BitMapHeader->SizeOfBitMap);
         HintIndex = 0;
         goto retry;
     }

@@ -24,9 +24,12 @@ set(OpenRegistry_HEADER_FILES
 	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/cmdata.h"
 	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/cmlib.h"
 	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/Dependency/debug.h"
+	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/Dependency/poppack.h"
+	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/Dependency/pshpack1.h"
 	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/Dependency/typedefs.h"
-	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/Dependency/Wine/unicode.h"
+	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/Dependency/wine/unicode.h"
 	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/hivedata.h"
+	"${OpenRegistry_SOURCE_DIR}/Source/SimdUtf/SimdUtf.h"
 )
 set(OpenRegistry_SOURCE_FILES
 	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/cmcheck.c"
@@ -45,6 +48,7 @@ set(OpenRegistry_SOURCE_FILES
 	"${OpenRegistry_SOURCE_DIR}/Source/ConfigManager/hivewrt.c"
 	"${OpenRegistry_SOURCE_DIR}/Source/Hive.c"
 	"${OpenRegistry_SOURCE_DIR}/Source/Key.c"
+	"${OpenRegistry_SOURCE_DIR}/Source/SimdUtf/SimdUtf.c"
 	"${OpenRegistry_SOURCE_DIR}/Source/String.c"
 	"${OpenRegistry_SOURCE_DIR}/Source/Value.c"
 	"${OpenRegistry_SOURCE_DIR}/Source/ValueData.c"

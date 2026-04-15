@@ -18,6 +18,12 @@ static inline void swap_string_utf16le(
 		aOutput[i] = SwapBytes16Le(aInput[i]);
 }
 
+size_t Registry_CountString16(uint16_t* sInput) {
+	size_t i;
+	for (i = 0; sInput[i] != 0; ++i);
+	return i;
+}
+
 size_t Registry_FixString16(
 	registry_string16 Input,
 	uint16_t* aOutput
@@ -159,7 +165,7 @@ size_t Registry_ConvertString16ToWideStringAscii(
 	// For ASCII-only input, convert UTF-16LE code units (0x00XX) to UTF-32 (0x000000XX)
 	
 	for (size_t i = 0; i < nOutput; ++i)
-		aOutput[i] = swap_utf16le(Input.aBuffer[i]);
+		aOutput[i] = SwapBytes16Le(Input.aBuffer[i]);
 
 #endif
 
@@ -188,7 +194,7 @@ void Registry_ConvertWideStringToString16Ascii(
 #elif REGISTRY_WCHAR32
 
 	for (size_t i = 0; i < pOutput->Length; ++i)
-		pOutput->aBuffer[i] = swap_utf16le((uint16_t)aInput[i]);
+		pOutput->aBuffer[i] = SwapBytes16Le((uint16_t)aInput[i]);
 
 #endif
 }

@@ -23,6 +23,9 @@
 #define STATUS_NO_LOG_SPACE 	    ((NTSTATUS)0xC000017D)
 #define STATUS_NOT_FOUND            ((NTSTATUS)0xC0000225)
 
+#define REGISTRY_MIN(A, B) ((A) < (B) ? (A) : (B))
+#define REGISTRY_MAX(A, B) ((A) > (B) ? (A) : (B))
+
 typedef struct {
 	HHIVE Hive;
 

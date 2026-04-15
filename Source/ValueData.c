@@ -48,7 +48,7 @@ static registry_status Registry_ValidateValueData(
 					size_t iOffset = 0;
 					while (iOffset < n && ss[iOffset] != '\0') {
 						uint16_t* s = &ss[iOffset];
-						size_t Length = wcslen(s);
+						size_t Length = Registry_CountString16(s);
 						iOffset += Length + 1;
 					};
 				} else {
@@ -152,7 +152,7 @@ registry_status Registry_QueryValueDataWithType(
 		return Status;
 	}
 
-	uint32_t CopySize = min(nData, *pRealSize);
+	uint32_t CopySize = (nData, *pRealSize);
 	memcpy(pData, pValueData, CopySize);
 
 	Registry_CloseValueData(hValueData);
@@ -185,7 +185,7 @@ registry_status Registry_QueryValueDataWithTypeNative(
 	switch (ExpectedType) {
 		case REGISTRY_NONE:
 		case REGISTRY_BINARY:
-			memcpy(pData, pValueData, min(nData, ValueRealSize));
+			memcpy(pData, pValueData, (nData, ValueRealSize));
 			*pRealSize = ValueRealSize;
 			Status = STATUS_SUCCESS;
 			break;
@@ -233,7 +233,7 @@ registry_status Registry_QueryValueDataWithTypeNative(
 			break;
 			*/
 
-			memcpy(pData, pValueData, min(nData, ValueRealSize));
+			memcpy(pData, pValueData, (nData, ValueRealSize));
 			*pRealSize = ValueRealSize;
 			Status = STATUS_SUCCESS;
 			break;
@@ -369,7 +369,7 @@ registry_status Registry_SetValueData(
 	assert(pKeyCellData->u.KeyNode.Signature == CM_KEY_NODE_SIGNATURE);
 	CM_KEY_NODE* pKeyNode = &pKeyCellData->u.KeyNode;
 
-	pKeyNode->MaxValueDataLen = max(pKeyNode->MaxValueDataLen, nData);
+	pKeyNode->MaxValueDataLen = REGISTRY_MAX(pKeyNode->MaxValueDataLen, nData);
 	KeQuerySystemTime(&pKeyNode->LastWriteTime);
 
 	return STATUS_SUCCESS;
