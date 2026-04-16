@@ -454,6 +454,8 @@ VOID CMAPI
 HvFree(
    PHHIVE RegistryHive);
 
+#if 0 // OpenRegistry change
+
 #define HvGetCell(Hive, Cell)   \
     (Hive)->GetCellRoutine(Hive, Cell)
 
@@ -462,6 +464,18 @@ do {                                            \
     if ((Hive)->ReleaseCellRoutine)             \
         (Hive)->ReleaseCellRoutine(Hive, Cell); \
 } while(0)
+
+#else
+
+// Since it's unclear what's the intention behind these functions,
+// and if they're intended for read-write protection/lock, their use
+// in cmlib is broken anyways. As a result, let's disable them for performance.
+// This wont break anything.
+
+#define HvGetCell(Hive, Cell) HvpGetCellData(Hive, Cell)
+#define HvReleaseCell(Hive, Cell) do {(void)(Hive); (void)(Cell);} while (0)
+
+#endif
 
 LONG CMAPI
 HvGetCellSize(

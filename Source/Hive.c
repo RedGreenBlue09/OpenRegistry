@@ -87,7 +87,6 @@ static BOOLEAN CMAPI MemoryFileFlush(
 	ULONG Length
 ) {
 	// Doesn't seem like pFileOffset and Length is used at all.
-	(void)pRegistryHive;
 	(void)FileType;
 	(void)pFileOffset;
 	(void)Length;
