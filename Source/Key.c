@@ -93,7 +93,7 @@ registry_status Registry_QueryKeyName(
 
 	USHORT NameLength = RealNameSize / sizeof(uint16_t);
 	*pRealNameLength = NameLength;
-	NameLength = (USHORT)((size_t)NameLength, pResult->AllocatedLength);
+	NameLength = (USHORT)REGISTRY_MIN((size_t)NameLength, pResult->AllocatedLength);
 	pResult->Length = NameLength;
 	USHORT NameSize = NameLength * sizeof(uint16_t);
 

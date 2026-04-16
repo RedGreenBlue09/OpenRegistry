@@ -152,7 +152,7 @@ registry_status Registry_QueryValueDataWithType(
 		return Status;
 	}
 
-	uint32_t CopySize = (nData, *pRealSize);
+	uint32_t CopySize = REGISTRY_MIN(nData, *pRealSize);
 	memcpy(pData, pValueData, CopySize);
 
 	Registry_CloseValueData(hValueData);
@@ -185,7 +185,7 @@ registry_status Registry_QueryValueDataWithTypeNative(
 	switch (ExpectedType) {
 		case REGISTRY_NONE:
 		case REGISTRY_BINARY:
-			memcpy(pData, pValueData, (nData, ValueRealSize));
+			memcpy(pData, pValueData, REGISTRY_MIN(nData, ValueRealSize));
 			*pRealSize = ValueRealSize;
 			Status = STATUS_SUCCESS;
 			break;
@@ -233,7 +233,7 @@ registry_status Registry_QueryValueDataWithTypeNative(
 			break;
 			*/
 
-			memcpy(pData, pValueData, (nData, ValueRealSize));
+			memcpy(pData, pValueData, REGISTRY_MIN(nData, ValueRealSize));
 			*pRealSize = ValueRealSize;
 			Status = STATUS_SUCCESS;
 			break;
